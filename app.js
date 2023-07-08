@@ -5,6 +5,7 @@ import ErrorMiddelware from "./middelware/error.js";
 import userRoute from "./routes/userRoute.js"
 import bodyParser from "body-parser";
 import postRoute from "./routes/postRoute.js"
+import cors from "cors"
 
 
 
@@ -13,6 +14,8 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.json())
+app.use(cors())
+
 
 // Config
 config({
