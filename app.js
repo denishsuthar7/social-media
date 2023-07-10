@@ -15,7 +15,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.json())
 app.use(cors({
-    origin: '*'
+    origin: '*',
+    credentials: true,
 }));
 
 // Config
