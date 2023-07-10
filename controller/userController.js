@@ -225,23 +225,12 @@ export const myProfile = catchAsyncError(async(req,res,next)=>{
 // Update User Profile
 export const updateProfile = catchAsyncError(async(req,res,next)=>{
     const {name, mobileNumber} = req.body
-    const file = req.file
 
     const user = await User.findById(req.user.id);
 
     if(name) user.name = name;
     if(mobileNumber) user.mobileNumber = mobileNumber;
-    if (file) {
-      const fileUri = getDataUri(file);
-      const myCloud = await cloudinary.v2.uploader.upload(fileUri.content, {
-        folder: "avatars",
-      });
-      await cloudinary.v2.uploader.destroy(user.avatar.public_id);
-      user.avatar = {
-        public_id: myCloud.public_id,
-        url: myCloud.secure_url,
-      };
-    }
+
 
     await user.save();
 
@@ -250,6 +239,29 @@ export const updateProfile = catchAsyncError(async(req,res,next)=>{
         message:"Profile Updated Successfully",
         user
     })
+})
+
+// Update User Avatar Profile Pic
+export const updateAvatar = catchAsyncError(async(req, res, next)=>{
+  const file = req.file;
+  const user = await User.findById(req.user.id);
+
+  const fileUri = getDataUri(file);
+  const myCloud = await cloudinary.v2.uploader.upload(fileUri.content, {
+      folder:"avatars"
+  });
+  await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+
+  user.avatar = {
+      public_id:myCloud.public_id,
+      url:myCloud.secure_url,
+  }
+  await user.save();
+
+  res.status(200).json({
+      success:true,
+      message:"Profile Avatar Updated Successfully"
+  })
 })
 
 // Update User Password
